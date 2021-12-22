@@ -6,8 +6,8 @@ import { ID3v2 } from '../src/index';
 describe('An id3v2 tag', () => {
   let tag: ID3v2;
 
-  it('should return nothing on invalid file', () => {
-    tag = new ID3v2(join(__dirname, 'index-test.js'));
+  it('should return nothing on invalid file', async () => {
+    tag = await ID3v2.read(join(__dirname, 'index-test.js'));
     assert.isUndefined(tag.genre);
     assert.isUndefined(tag.track);
     assert.isUndefined(tag.album);
@@ -17,8 +17,8 @@ describe('An id3v2 tag', () => {
   });
 
   describe('when given a valid file', () => {
-    before(() => {
-      tag = new ID3v2(join(__dirname, 'test.mp3'));
+    before(async () => {
+      tag = await ID3v2.read(join(__dirname, 'test.mp3'));
     });
 
     it('should contain id3 tag data', () => {

@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFile } from 'fs/promises';
 import * as iconv from 'iconv-lite';
 
 /*
@@ -288,9 +288,13 @@ export class ID3v2 {
 
   private readonly frames: { [name: string]: FrameData | FrameData[] } = {};
 
+  static async read(path: string): Promise<ID3v2> {
+    let buffer = await readFile(path);
+    return new this(buffer);
+  }
+
   // tslint:disable-next-line cyclomatic-complexity
-  constructor(path: string) {
-    const buffer = readFileSync(path);
+  constructor(buffer: Buffer) {
     if (!isID3(buffer) || !isID3v24(buffer)) {
       return;
     }
@@ -310,7 +314,11 @@ export class ID3v2 {
 
     while (startOfFrame < size) {
       const frameBuffer = buffer.slice(startOfFrame);
-      if (isPadding(frameBuffer)) {
+      try {
+        if (isPadding(frameBuffer)) {
+          break;
+        }
+      } catch {
         break;
       }
       const frame = getFrameData(frameBuffer);
