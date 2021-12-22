@@ -13,7 +13,6 @@
     "clean": "rimraf dist",
     "prebuild": "yarn clean",
     "build": "tsc --sourceMap",
-    "postinstall": "tsc --sourceMap",
     "precopy-test-assets": "yarn build",
     "copy-test-assets": "cp test/*.mp3 dist/test/",
     "pretest": "yarn copy-test-assets",
